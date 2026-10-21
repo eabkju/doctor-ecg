@@ -1,4 +1,4 @@
-name: Deploy CardioVeda Pro to GitHub Pages
+name: Deploy Doctor ECG to GitHub Pages
 
 on:
   push:

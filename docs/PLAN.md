@@ -1,7 +1,7 @@
-# CardioVeda Pro: Medical-Grade 12-Lead ECG Simulator, AI Interpreter & Bilingual Learning Platform
+# Doctor ECG Pro: Medical-Grade 12-Lead ECG Simulator, AI Interpreter & Bilingual Learning Platform
 
 ## 1. Executive Summary & Vision
-**CardioVeda Pro** is a clinical-grade, interactive 12-lead Electrocardiogram (ECG) simulation and diagnostic learning web application. Designed for medical students, interns, residents, cardiologists, nurses, and paramedics, the platform bridges the gap between theoretical textbook waveforms and messy real-world clinical ECG strips. 
+**Doctor ECG Pro** is a clinical-grade, interactive 12-lead Electrocardiogram (ECG) simulation and diagnostic learning web application. Designed for medical students, interns, residents, cardiologists, nurses, and paramedics, the platform bridges the gap between theoretical textbook waveforms and messy real-world clinical ECG strips. 
 
 ### Core Value Propositions
 * **Mathematical Precision:** True biophysical 12-lead waveform synthesis calibrated to exact international medical standards ($25\text{ mm/s}$ and $50\text{ mm/s}$ sweep speeds; $5\text{ mm/mV}$, $10\text{ mm/mV}$, and $20\text{ mm/mV}$ gains).
@@ -251,7 +251,7 @@ To support bedside use, dark ICU environments, lecture projections, and print st
 
 ## 8. Modernizations & Improvised Value-Add Features
 
-To elevate **CardioVeda Pro** beyond standard ECG apps, the following modern interactive features are integrated:
+To elevate **Doctor ECG Pro** beyond standard ECG apps, the following modern interactive features are integrated:
 
 ### 8.1 Virtual Brass Calipers & Magnifying Loupe
 * **Interactive Marching Calipers:** Two draggable needle points on screen. Once set to an $R\text{-}R$ or $P\text{-}P$ interval, users can "march" (flip) the caliper across the strip to immediately expose subtle regularities (e.g., hidden P-waves buried in T-waves during 2:1 Atrial Flutter or Complete Heart Block).
@@ -284,7 +284,7 @@ Users can administer virtual interventions and watch the 12-lead ECG respond dyn
 
 ```
 +-----------------------------------------------------------------------------------+
-| [Logo: CardioVeda Pro]  [Mode: Simulator | AI Upload | Disease Atlas | OSCE Quiz] |
+| [Logo: Doctor ECG Pro]  [Mode: Simulator | AI Upload | Disease Atlas | OSCE Quiz] |
 |                         [Lang: EN | বাংলা | Split]  [Theme: Thermal Paper ▼]       |
 +-----------------------+-----------------------------------+-----------------------+
 |                       |  [25 mm/s] [10 mm/mV] [Filter ON] |                       |

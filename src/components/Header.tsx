@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-lg tracking-tight text-white">CardioVeda</span>
+                <span className="font-extrabold text-lg tracking-tight text-white">Doctor ECG</span>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">PRO</span>
               </div>
               <p className="text-[11px] text-slate-400 font-medium">Medical 12-Lead ECG & Bilingual Engine</p>

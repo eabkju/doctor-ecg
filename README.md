@@ -1,6 +1,7 @@
-# 🫀 CardioVeda Pro
+# 🫀 Doctor ECG Pro
 ### Medical-Grade 12-Lead ECG Simulator, AI Interpreter & Bilingual Clinical Learning Platform
 
+[![Live Demo](https://img.shields.io/badge/Demo-Live_GitHub_Pages-brightgreen?style=for-the-badge&logo=github)](https://eabkju.github.io/doctor-ecg/)
 [![React](https://img.shields.io/badge/React-18%2F19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
@@ -12,9 +13,9 @@
 
 ## 🌟 Executive Summary & Vision
 
-**CardioVeda Pro** is an open-source, clinical-grade 12-lead Electrocardiogram (ECG) simulation and diagnostic learning web platform. Designed specifically for medical students, interns, resident physicians, cardiologists, emergency nurses, and paramedics, the platform bridges the gap between static textbook diagrams and chaotic real-world bedside ECG strips.
+**Doctor ECG Pro** is an open-source, clinical-grade 12-lead Electrocardiogram (ECG) simulation and diagnostic learning web platform. Designed specifically for medical students, interns, resident physicians, cardiologists, emergency nurses, and paramedics, the platform bridges the gap between static textbook diagrams and chaotic real-world bedside ECG strips.
 
-Unlike conventional ECG apps that replay pre-recorded static SVGs, **CardioVeda Pro** synthesizes electrophysiological dipole vectors $\vec{P}(t)$ in real time using the **extended McSharry dynamical ordinary differential equations (ODEs)** and projects them onto the 12 standard leads through the **Inverse Dower Transformation Matrix** and **Einthoven's/Goldberger's laws**.
+Unlike conventional ECG apps that replay pre-recorded static SVGs, **Doctor ECG Pro** synthesizes electrophysiological dipole vectors $\vec{P}(t)$ in real time using the **extended McSharry dynamical ordinary differential equations (ODEs)** and projects them onto the 12 standard leads through the **Inverse Dower Transformation Matrix** and **Einthoven's/Goldberger's laws**.
 
 ---
 
@@ -69,7 +70,7 @@ Administer virtual emergency interventions and observe the dynamic electrophysio
 
 ## 🌐 Bilingual Pedagogy (English & বাংলা)
 
-Many medical students, interns, and nurses in South Asia study medical science in English but process complex pathophysiological logic in **বাংলা (Bengali)**. **CardioVeda Pro** features a 3-mode pedagogical language switch:
+Many medical students, interns, and nurses in South Asia study medical science in English but process complex pathophysiological logic in **বাংলা (Bengali)**. **Doctor ECG Pro** features a 3-mode pedagogical language switch:
 
 * **English Only:** Standard international cardiological nomenclature.
 * **বাংলা + Clinical Terms (Hybrid):** Fluent, natural Bengali explanations preserving universal clinical terms (*SA Node, AV Block, STEMI, Reciprocal Change*) in brackets.
@@ -148,10 +149,10 @@ cardioveda-pro/
 ### Local Installation
 ```bash
 # Clone the repository
-git clone https://github.com/eabkju/cardioveda-pro.git
+git clone https://github.com/eabkju/doctor-ecg.git
 
 # Enter project directory
-cd cardioveda-pro
+cd doctor-ecg
 
 # Install dependencies
 npm install
@@ -172,28 +173,29 @@ Optimized assets are compiled into `dist/`.
 
 ## 🌐 Instant Web Deployment
 
-### 1. Deploy to Vercel (Recommended)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/eabkju/cardioveda-pro)
+### 1. GitHub Pages (Live)
+The application is automatically built and deployed via GitHub Actions:
+**Live URL:** [https://eabkju.github.io/doctor-ecg/](https://eabkju.github.io/doctor-ecg/)
+
+### 2. Deploy to Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/eabkju/doctor-ecg)
 ```bash
 npm install -g vercel
 vercel
 ```
 
-### 2. Deploy to Netlify
+### 3. Deploy to Netlify
 ```bash
 npm install -g netlify-cli
 netlify deploy --prod --dir=dist
 ```
-
-### 3. Deploy to GitHub Pages
-The included GitHub Action (`.github/workflows/deploy.yml`) deploys automatically on every push to `main`! Just ensure GitHub Pages is enabled under **Settings → Pages → Source: GitHub Actions**.
 
 ---
 
 ## ⚖️ Clinical & Legal Disclaimer
 
 > [!CAUTION]
-> **CardioVeda Pro** is strictly intended for **educational, pedagogical, and simulation training purposes** for medical students, healthcare trainees, and clinical professionals. It is not an FDA/CE-cleared diagnostic medical device and must never be used as a substitute for professional clinical judgment, emergency medical protocols, or real-life patient care.
+> **Doctor ECG Pro** is strictly intended for **educational, pedagogical, and simulation training purposes** for medical students, healthcare trainees, and clinical professionals. It is not an FDA/CE-cleared diagnostic medical device and must never be used as a substitute for professional clinical judgment, emergency medical protocols, or real-life patient care.
 
 ---
 

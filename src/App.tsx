@@ -184,7 +184,7 @@ export const App: React.FC = () => {
       {/* Clinical Footer */}
       <footer className="bg-slate-950 border-t border-slate-900 text-slate-500 text-xs py-4 px-4 text-center space-y-1">
         <p className="font-medium text-slate-400">
-          CardioVeda Pro &copy; 2026 • Medical-Grade 12-Lead Electrocardiogram Synthesis & Pedagogical AI Platform
+          Doctor ECG Pro &copy; 2026 • Medical-Grade 12-Lead Electrocardiogram Synthesis & Pedagogical AI Platform
         </p>
         <p className="text-[11px] text-slate-600 font-mono">
           Strict International Medical Calibration: 25 mm/s / 50 mm/s • 10 mm/mV • Dower Matrix Dipole Projection • English & বাংলা
