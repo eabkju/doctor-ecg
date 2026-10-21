@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default Theme: Classic Thermal Paper */
+  --ecg-bg: #FFFDF9;
+  --ecg-grid: #F8B4B4;
+  --ecg-grid-bold: #E05A5A;
+  --ecg-trace: #1A1A1A;
+  --ecg-glow: transparent;
+  --ecg-cursor: #DC2626;
+}
+
+[data-theme='thermal'] {
+  --ecg-bg: #FFFDF9;
+  --ecg-grid: #FCA5A5;
+  --ecg-grid-bold: #DC2626;
+  --ecg-trace: #111827;
+  --ecg-glow: transparent;
+  --ecg-cursor: #B91C1C;
+}
+
+[data-theme='icu'] {
+  --ecg-bg: #07090E;
+  --ecg-grid: #131E2E;
+  --ecg-grid-bold: #1E2E48;
+  --ecg-trace: #00FF66;
+  --ecg-glow: rgba(0, 255, 102, 0.45);
+  --ecg-cursor: #00FFFF;
+}
+
+[data-theme='daylight'] {
+  --ecg-bg: #FFFFFF;
+  --ecg-grid: #DBEAFE;
+  --ecg-grid-bold: #60A5FA;
+  --ecg-trace: #0F172A;
+  --ecg-glow: transparent;
+  --ecg-cursor: #2563EB;
+}
+
+[data-theme='blueprint'] {
+  --ecg-bg: #0A192F;
+  --ecg-grid: #172D4D;
+  --ecg-grid-bold: #234775;
+  --ecg-trace: #F8FAFC;
+  --ecg-glow: rgba(248, 250, 252, 0.3);
+  --ecg-cursor: #F59E0B;
+}
+
+[data-theme='crt'] {
+  --ecg-bg: #14110F;
+  --ecg-grid: #332215;
+  --ecg-grid-bold: #523824;
+  --ecg-trace: #FFB000;
+  --ecg-glow: rgba(255, 176, 0, 0.5);
+  --ecg-cursor: #FFD166;
+}
+
+[data-theme='high-contrast'] {
+  --ecg-bg: #FFFFFF;
+  --ecg-grid: #E5E7EB;
+  --ecg-grid-bold: #9CA3AF;
+  --ecg-trace: #000000;
+  --ecg-glow: transparent;
+  --ecg-cursor: #4B5563;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.8);
+}
