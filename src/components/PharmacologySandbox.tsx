@@ -49,11 +49,13 @@ export const PharmacologySandbox: React.FC<PharmacologySandboxProps> = ({
 
   // 2. IV Calcium Gluconate + Insulin/Dextrose (for Hyperkalemia)
   const handleCalciumInsulin = () => {
-    triggerFeedback('Administering IV 10% Calcium Gluconate 10ml + 10U Regular Insulin in 50% Dextrose. Membrane stabilized...');
+    triggerFeedback('Administering IV 10% Calcium Gluconate 10ml + 10U Regular Insulin in 50% Dextrose. Membrane stabilized and potassium shifted intracellularly.');
     onApplyIntervention((prev) => ({
       ...prev,
-      qrsDurationMs: 88,
-      prIntervalMs: 165,
+      rhythm: 'normal_sinus',
+      heartRate: 72,
+      qrsDurationMs: 86,
+      prIntervalMs: 160,
       leadModifiers: {}
     }));
   };

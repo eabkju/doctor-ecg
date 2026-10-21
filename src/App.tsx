@@ -27,6 +27,8 @@ export const App: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
   const [caliperActive, setCaliperActive] = useState<boolean>(false);
+  const [caliperA, setCaliperA] = useState<number>(35);
+  const [caliperB, setCaliperB] = useState<number>(55);
   const [highlightTerritories, setHighlightTerritories] = useState<boolean>(false);
 
   // Active case & simulator parameters
@@ -93,6 +95,12 @@ export const App: React.FC = () => {
           onToggle={() => setCaliperActive(!caliperActive)}
           sweepSpeedMmSec={25}
           gainMmPerMv={10}
+          needleA={caliperA}
+          needleB={caliperB}
+          onChangeNeedles={(a, b) => {
+            setCaliperA(a);
+            setCaliperB(b);
+          }}
         />
 
         {/* View Switcher Container */}
@@ -115,6 +123,11 @@ export const App: React.FC = () => {
               highlightTerritories={highlightTerritories}
               onToggleTerritories={() => setHighlightTerritories(!highlightTerritories)}
               caliperActive={caliperActive}
+              caliperNeedles={{ needleA: caliperA, needleB: caliperB }}
+              onChangeNeedles={(a, b) => {
+                setCaliperA(a);
+                setCaliperB(b);
+              }}
             />
             <PharmacologySandbox
               currentParams={params}
@@ -131,6 +144,11 @@ export const App: React.FC = () => {
               highlightTerritories={highlightTerritories}
               onToggleTerritories={() => setHighlightTerritories(!highlightTerritories)}
               caliperActive={caliperActive}
+              caliperNeedles={{ needleA: caliperA, needleB: caliperB }}
+              onChangeNeedles={(a, b) => {
+                setCaliperA(a);
+                setCaliperB(b);
+              }}
             />
             <OSCEQuizModal
               langMode={langMode}
@@ -148,6 +166,11 @@ export const App: React.FC = () => {
               highlightTerritories={highlightTerritories}
               onToggleTerritories={() => setHighlightTerritories(!highlightTerritories)}
               caliperActive={caliperActive}
+              caliperNeedles={{ needleA: caliperA, needleB: caliperB }}
+              onChangeNeedles={(a, b) => {
+                setCaliperA(a);
+                setCaliperB(b);
+              }}
             />
 
             {/* Bottom: 3-Column Diagnostic & Controls Workspace */}

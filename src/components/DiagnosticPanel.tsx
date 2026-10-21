@@ -90,7 +90,7 @@ export const DiagnosticPanel: React.FC<DiagnosticPanelProps> = ({
           <div className="bg-slate-950 p-2 rounded-xl border border-slate-800/80">
             <span className="text-slate-400 block text-[10px]">QTc (Bazett / Frid):</span>
             <span className="font-bold text-cyan-400 text-sm">
-              {qtc.bazett} / {qtc.fridericia} ms
+              {qtc.bazett > 0 ? `${qtc.bazett} / ${qtc.fridericia} ms` : 'Unmeasurable'}
             </span>
           </div>
         </div>

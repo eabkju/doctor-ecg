@@ -37,6 +37,9 @@ export interface ComputedECGState {
  * Calculates live QTc using Bazett's and Fridericia's formulas
  */
 export function calculateQTc(qtMs: number, hr: number): { bazett: number; fridericia: number } {
+  if (!qtMs || qtMs <= 0) {
+    return { bazett: 0, fridericia: 0 };
+  }
   const rrSec = 60 / Math.max(20, Math.min(300, hr));
   const qtSec = qtMs / 1000;
   const bazett = Math.round((qtSec / Math.sqrt(rrSec)) * 1000);
@@ -50,21 +53,23 @@ export function calculateQTc(qtMs: number, hr: number): { bazett: number; frider
 function gaussian(theta: number, a: number, b: number, mu: number): number {
   let diff = theta - mu;
   while (diff < -Math.PI) diff += 2 * Math.PI;
-  while (diff > Math.PI) diff -= 2 * Math.PI;
+  while (diff > Math.PI) diff += 2 * Math.PI;
   return a * Math.exp(-(diff * diff) / (2 * b * b));
 }
 
 /**
- * Generates continuous biophysical 3D cardiac vector [Px, Py, Pz] at relative cardiac cycle phase theta [0, 2*PI)
+ * Generates continuous biophysical 3D cardiac vector [Px, Py, Pz]
+ * Supports Dual-Oscillator architecture for AV Dissociation & Flutter
  */
 export function computeCardiacDipole(
   theta: number,
   params: SimulatorParams,
-  axisRad: number
+  axisRad: number,
+  currentTimeSec?: number
 ): [number, number, number] {
-  const { rhythm, prIntervalMs, qrsDurationMs } = params;
+  const { rhythm, qrsDurationMs } = params;
 
-  // Handle special rhythms: Ventricular Fibrillation (chaotic waves)
+  // Handle Ventricular Fibrillation (chaotic waves)
   if (rhythm === 'ventricular_fibrillation' || rhythm === 'coarse_vf') {
     const chaoticPx = 0.4 * Math.sin(theta * 3.2) + 0.3 * Math.cos(theta * 7.1) + 0.2 * Math.sin(theta * 13.5);
     const chaoticPy = 0.5 * Math.sin(theta * 2.8 + 1.2) + 0.35 * Math.cos(theta * 5.7);
@@ -74,14 +79,13 @@ export function computeCardiacDipole(
 
   // Handle Asystole (flat line with micro-baseline wander)
   if (rhythm === 'asystole') {
-    return [0.01 * Math.sin(theta), 0.01 * Math.cos(theta), 0];
+    return [0.008 * Math.sin(theta), 0.008 * Math.cos(theta), 0];
   }
 
   // Ventricular Tachycardia (wide, monomorphic or polymorphic)
   if (rhythm.includes('ventricular_tachycardia') || rhythm.includes('monomorphic_vt') || rhythm.includes('torsades')) {
     const isTdp = rhythm.includes('torsades');
     const tdpEnvelope = isTdp ? Math.sin(theta * 0.25) : 1.0;
-    const qrsPhase = Math.sin(theta);
     const wideQrs = Math.pow(Math.sin(theta), 3) * 1.8 * tdpEnvelope;
     const px = wideQrs * Math.cos(axisRad) * 0.8;
     const py = wideQrs * Math.sin(axisRad) * 1.2;
@@ -89,38 +93,37 @@ export function computeCardiacDipole(
     return [px, py, pz];
   }
 
-  // Normal / Pathological Conducted Beat Components:
-  // Phase angles on circle [-PI, +PI]:
-  // P wave center: -2.0 rad
-  // QRS complex center: 0 rad
-  // T wave center: +1.6 rad
-  // U wave center: +2.5 rad
-
   // Atrial Depolarization (P-wave)
   let pAmp = 0.18;
   let pWidth = 0.16;
   let pTheta = -1.9;
+  let P_wave = 0;
 
-  // Modulate P wave for specific atrial pathology
   if (rhythm.includes('atrial_fibrillation')) {
     // Chaotic fibrillatory 'f' waves without distinct P-waves
-    pAmp = 0.04 * (Math.sin(theta * 16) + Math.cos(theta * 22));
-    pWidth = 0.4;
+    P_wave = 0.045 * (Math.sin(theta * 16) + Math.cos(theta * 22) + Math.sin(theta * 34));
   } else if (rhythm.includes('atrial_flutter')) {
-    // Sawtooth 'F' waves (~300 bpm = continuous 4-5 waves per cycle)
-    pAmp = 0.22 * Math.sin(theta * 4);
-    pWidth = 0.5;
-  } else if (rhythm.includes('p_mitrale')) {
-    // Broad, notched P wave in mitral stenosis / LAE
-    pAmp = 0.22;
-    pWidth = 0.26;
-  } else if (rhythm.includes('p_pulmonale')) {
-    // Tall peaked P wave in cor pulmonale / RAE (>2.5mm)
-    pAmp = 0.38;
-    pWidth = 0.12;
-  } else if (rhythm.includes('av_block_3rd_degree')) {
-    // Independent P waves simulated via multi-oscillator phase
-    pAmp = 0.18;
+    // Classical ~300 bpm counter-clockwise sawtooth 'F' waves (every 0.2s)
+    if (currentTimeSec !== undefined) {
+      const flutterPhase = ((currentTimeSec % 0.2) / 0.2) * 2 * Math.PI;
+      P_wave = 0.22 * (Math.sin(flutterPhase) - 0.45 * Math.sin(2 * flutterPhase));
+    } else {
+      P_wave = 0.22 * Math.sin(theta * 4);
+    }
+  } else if (rhythm.includes('av_block_3rd_degree') && currentTimeSec !== undefined) {
+    // DUAL-OSCILLATOR: Independent SA Nodal Pacemaker running at 75 BPM (period = 0.8s)
+    const atrialPeriod = 0.8; // 75 BPM
+    const atrialTheta = ((currentTimeSec % atrialPeriod) / atrialPeriod) * 2 * Math.PI - Math.PI;
+    P_wave = gaussian(atrialTheta, pAmp, pWidth, pTheta);
+  } else {
+    if (rhythm.includes('p_mitrale')) {
+      pAmp = 0.24;
+      pWidth = 0.26;
+    } else if (rhythm.includes('p_pulmonale')) {
+      pAmp = 0.38;
+      pWidth = 0.12;
+    }
+    P_wave = gaussian(theta, pAmp, pWidth, pTheta);
   }
 
   // QRS parameters based on qrsDuration
@@ -142,10 +145,6 @@ export function computeCardiacDipole(
   const tWidth = 0.35;
   const tTheta = 1.6;
 
-  // Vector Frank components
-  // P wave primarily along cranio-caudal (Py) and leftward (Px)
-  const P_wave = gaussian(theta, pAmp, pWidth, pTheta);
-  
   // Q, R, S waves
   const Q_wave = gaussian(theta, qAmp, qWidth, qTheta);
   const R_wave = gaussian(theta, rAmp, rWidth, rTheta);
@@ -206,7 +205,7 @@ export function projectTo12Leads(
     'V6': rawV6
   };
 
-  // 3. Apply Lead Reversal Artifacts if enabled
+  // 3. Apply Lead Reversal Artifacts if enabled with full mathematical consistency
   if (leadReversal === 'LA-RA') {
     // Swapping Left Arm and Right Arm reverses Lead I, swaps Lead II and III, swaps aVR and aVL
     const tempI = leads['I'];
@@ -218,26 +217,33 @@ export function projectTo12Leads(
     leads['aVR'] = leads['aVL'];
     leads['aVL'] = tempAVR;
   } else if (leadReversal === 'RA-LL') {
-    const tempII = leads['II'];
-    leads['II'] = -tempII;
-    leads['I'] = -leads['III'];
+    // Swapping Right Arm and Left Leg:
+    // I = -III, II = -II, III = -I, aVR = -aVF, aVF = -aVR
+    const oldI = leads['I'];
+    const oldII = leads['II'];
+    const oldIII = leads['III'];
+    leads['I'] = -oldIII;
+    leads['II'] = -oldII;
+    leads['III'] = -oldI;
+    const oldAVR = leads['aVR'];
+    leads['aVR'] = -leads['aVF'];
+    leads['aVF'] = -oldAVR;
   } else if (leadReversal === 'V1-V2-high') {
     leads['V1'] = leads['V1'] * 0.6 + 0.1 * Math.sin(theta);
     leads['V2'] = leads['V2'] * 0.7;
   }
 
   // 4. Apply clinical lead modifiers (ST elevation/depression, hyperacute T, deep Q-waves)
-  // ST-elevation phase happens around theta in [0.3, 1.4]
   const isSTPhase = theta > 0.25 && theta < 1.45;
   const stEnvelope = Math.sin((theta - 0.25) / 1.2 * Math.PI);
 
-  // T wave phase happens around theta in [1.2, 2.2]
   const isTPhase = theta > 1.2 && theta < 2.2;
   const tEnvelope = Math.sin((theta - 1.2) / 1.0 * Math.PI);
 
   for (const [leadKey, mod] of Object.entries(leadModifiers)) {
     const lead = leadKey as LeadName;
-    if (!mod || !leads[lead]) continue;
+    // Strict undefined check (replaces faulty !leads[lead] zero-crossing bug)
+    if (!mod || leads[lead] === undefined) continue;
 
     // ST elevation/depression (1mm = 0.1 mV)
     if (mod.stElevationMm !== undefined && isSTPhase) {
@@ -246,7 +252,7 @@ export function projectTo12Leads(
     }
 
     // Pathological Q-wave depth (in mm)
-    if (mod.qWaveMm !== undefined && theta > -0.2 && theta < 0.0) {
+    if (mod.qWaveMm !== undefined && mod.qWaveMm !== 0 && theta > -0.2 && theta < 0.0) {
       leads[lead] += (mod.qWaveMm * 0.1) * Math.cos((theta + 0.1) * 15);
     }
 
@@ -259,13 +265,13 @@ export function projectTo12Leads(
       } else if (mod.tWave === 'inverted') {
         leads[lead] -= 0.65 * tEnvelope; // Symmetric deep inversion
       } else if (mod.tWave === 'flattened') {
-        leads[lead] -= 0.22 * tEnvelope; // Hypokalemia / ischemia
+        leads[lead] -= 0.24 * tEnvelope; // Hypokalemia / ischemia
       } else if (mod.tWave === 'biphasic') {
         leads[lead] += 0.3 * Math.sin((theta - 1.2) * 2 * Math.PI); // Wellens Type A
       }
     }
 
-    // Delta wave (Wolf-Parkinson-White) slurring in PR-QRS transition
+    // Delta wave (Wolff-Parkinson-White) slurring in PR-QRS transition
     if (mod.deltaWave && theta > -0.4 && theta < -0.1) {
       leads[lead] += 0.25 * Math.cos((theta + 0.25) * 8);
     }
@@ -273,6 +279,11 @@ export function projectTo12Leads(
     // Epsilon wave (ARVC) notch at end of QRS
     if (mod.epsilonWave && theta > 0.15 && theta < 0.35) {
       leads[lead] += 0.12 * Math.sin((theta - 0.15) * 25);
+    }
+
+    // RBBB rsR' "rabbit ears" in V1-V2
+    if (mod.bizarreMorphology && (lead === 'V1' || lead === 'V2') && theta > 0.08 && theta < 0.24) {
+      leads[lead] += 0.45 * Math.sin((theta - 0.08) * 20);
     }
 
     // Voltage multiplier (LVH / low voltage)

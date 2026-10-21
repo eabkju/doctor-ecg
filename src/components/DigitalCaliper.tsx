@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import { Scissors, MoveHorizontal, RefreshCw } from 'lucide-react';
+import { Scissors } from 'lucide-react';
 
 interface DigitalCaliperProps {
   active: boolean;
   onToggle: () => void;
   sweepSpeedMmSec: number; // 25 or 50 mm/s
   gainMmPerMv: number; // 5, 10, or 20 mm/mV
+  needleA: number; // 0 to 100 %
+  needleB: number; // 0 to 100 %
+  onChangeNeedles: (a: number, b: number) => void;
 }
 
 export const DigitalCaliper: React.FC<DigitalCaliperProps> = ({
   active,
   onToggle,
   sweepSpeedMmSec,
-  gainMmPerMv
+  needleA,
+  needleB,
+  onChangeNeedles
 }) => {
-  // Needle positions in percentage across the container (0% to 100%)
-  const [needleA, setNeedleA] = useState<number>(35);
-  const [needleB, setNeedleB] = useState<number>(55);
-  const [isMarching, setIsMarching] = useState<boolean>(false);
-
   if (!active) {
     return (
       <button
@@ -32,9 +32,8 @@ export const DigitalCaliper: React.FC<DigitalCaliperProps> = ({
     );
   }
 
-  // Calculate distance in physical screen mm approximation (assuming 800px standard canvas width representing 10 seconds = 250mm)
+  // Calculate distance in physical screen mm approximation (standard 10s = 250mm across width)
   const distancePct = Math.abs(needleB - needleA);
-  // Full screen width approx 10 seconds at 25 mm/s = 250 mm
   const estimatedSeconds = (distancePct / 100) * (250 / sweepSpeedMmSec);
   const deltaMs = Math.round(estimatedSeconds * 1000);
   const smallBoxes = (deltaMs / 40).toFixed(1);
@@ -45,18 +44,14 @@ export const DigitalCaliper: React.FC<DigitalCaliperProps> = ({
     const diff = needleB - needleA;
     const newA = Math.min(100 - diff, needleB);
     const newB = Math.min(100, needleB + diff);
-    setNeedleA(newA);
-    setNeedleB(newB);
-    setIsMarching(true);
+    onChangeNeedles(newA, newB);
   };
 
   const handleMarchBackward = () => {
     const diff = needleB - needleA;
     const newB = Math.max(diff, needleA);
     const newA = Math.max(0, needleA - diff);
-    setNeedleA(newA);
-    setNeedleB(newB);
-    setIsMarching(true);
+    onChangeNeedles(newA, newB);
   };
 
   return (
@@ -80,7 +75,7 @@ export const DigitalCaliper: React.FC<DigitalCaliperProps> = ({
         <div className="flex items-center space-x-1 bg-slate-900/80 px-2 py-0.5 rounded-lg border border-amber-500/30">
           <button
             onClick={handleMarchBackward}
-            className="p-1 hover:text-amber-300 text-slate-300 transition-colors"
+            className="p-1 hover:text-amber-300 text-slate-300 transition-colors font-mono"
             title="March Caliper Left"
           >
             ← March
@@ -88,7 +83,7 @@ export const DigitalCaliper: React.FC<DigitalCaliperProps> = ({
           <span className="text-slate-600">|</span>
           <button
             onClick={handleMarchForward}
-            className="p-1 hover:text-amber-300 text-slate-300 transition-colors"
+            className="p-1 hover:text-amber-300 text-slate-300 transition-colors font-mono"
             title="March Caliper Right"
           >
             March →
@@ -102,7 +97,7 @@ export const DigitalCaliper: React.FC<DigitalCaliperProps> = ({
             min="0"
             max="100"
             value={needleA}
-            onChange={(e) => setNeedleA(Number(e.target.value))}
+            onChange={(e) => onChangeNeedles(Number(e.target.value), needleB)}
             className="w-16 h-1 accent-amber-400 cursor-pointer"
             title="Needle 1 Position"
           />
@@ -111,7 +106,7 @@ export const DigitalCaliper: React.FC<DigitalCaliperProps> = ({
             min="0"
             max="100"
             value={needleB}
-            onChange={(e) => setNeedleB(Number(e.target.value))}
+            onChange={(e) => onChangeNeedles(needleA, Number(e.target.value))}
             className="w-16 h-1 accent-amber-400 cursor-pointer"
             title="Needle 2 Position"
           />

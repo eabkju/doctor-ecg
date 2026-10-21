@@ -10,7 +10,7 @@ import {
 } from '../core/mathEngine';
 import { generateArtifacts } from '../core/noiseGenerator';
 import { soundManager } from '../audio/audioEngine';
-import { Maximize2, ShieldCheck, Heart, Sparkles, Sliders } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface ECGMonitorProps {
   params: SimulatorParams;
@@ -19,6 +19,8 @@ interface ECGMonitorProps {
   highlightTerritories: boolean;
   onToggleTerritories: () => void;
   caliperActive: boolean;
+  caliperNeedles?: { needleA: number; needleB: number };
+  onChangeNeedles?: (a: number, b: number) => void;
 }
 
 export const ECGMonitor: React.FC<ECGMonitorProps> = ({
@@ -27,7 +29,9 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
   theme,
   highlightTerritories,
   onToggleTerritories,
-  caliperActive
+  caliperActive,
+  caliperNeedles,
+  onChangeNeedles
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
@@ -77,8 +81,15 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
 
       const currentTime = timeRef.current;
 
+      // Dynamic RR interval calculation (with deterministic irregularly-irregular jitter for AFib)
+      const isAFib = params.rhythm.includes('atrial_fibrillation');
+      const baseRR = 60 / Math.max(20, Math.min(300, params.heartRate));
+      const afibJitter = isAFib 
+        ? 0.28 * Math.sin(currentTime * 3.8) + 0.18 * Math.cos(currentTime * 8.4)
+        : 0;
+      const rrIntervalSec = Math.max(0.2, baseRR * (1 + afibJitter));
+
       // Handle monitor QRS sound triggering
-      const rrIntervalSec = 60 / Math.max(20, Math.min(300, params.heartRate));
       const currentCyclePhase = (currentTime % rrIntervalSec) / rrIntervalSec; // 0 to 1
       if (
         currentCyclePhase < 0.12 && 
@@ -115,8 +126,6 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
       ctx.fillRect(0, 0, width, height);
 
       // 2. Draw Medical Millimeter Grid
-      // At standard 100 DPI on screens: ~3.78 px per mm.
-      // Small box = 1 mm ~ 4 px; Large box = 5 mm ~ 20 px
       const pxPerMm = Math.max(3.2, Math.min(4.8, width / 260));
       const smallBoxPx = pxPerMm;
       const largeBoxPx = pxPerMm * 5;
@@ -154,7 +163,6 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
       const pxPerMv = pxPerMm * gain; // 10 mm/mV -> ~40 px/mV
 
       if (viewLayout === 'standard12') {
-        // Layout: 3 rows for standard 12 leads (75% height) + 1 bottom row for continuous Lead II (25% height)
         const gridHeight = height * 0.74;
         const rowHeight = gridHeight / 3;
         const colWidth = width / 4;
@@ -176,12 +184,12 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
               ctx.fillRect(cellX + 2, cellY + 2, colWidth - 4, rowHeight - 4);
             }
 
-            // Lead Label & Caliper mark
+            // Lead Label
             ctx.fillStyle = theme === 'icu' || theme === 'crt' || theme === 'blueprint' ? '#94A3B8' : '#475569';
             ctx.font = 'bold 11px "JetBrains Mono", monospace';
             ctx.fillText(lead, cellX + 8, cellY + 16);
 
-            // Draw Standard 1 mV Calibration Pulse at the beginning of each lead
+            // Draw Standard 1 mV Calibration Pulse
             const calStepWidthPx = (0.2 * sweepSpeed) * pxPerMm; // 200ms width
             const calStepHeightPx = 1.0 * pxPerMv; // 1mV height
             ctx.strokeStyle = traceColor;
@@ -202,11 +210,11 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
 
             for (let px = startX; px <= endX; px += 1.5) {
               const relSec = ((px - startX) / (endX - startX)) * secondsInCell;
-              // Sample at static / scrolling position
               const t = (currentTime + relSec);
               const phaseTheta = ((t % rrIntervalSec) / rrIntervalSec) * 2 * Math.PI - Math.PI;
 
-              const dipole = computeCardiacDipole(phaseTheta, params, axisRad);
+              // Pass current absolute time t for dual-oscillator sync
+              const dipole = computeCardiacDipole(phaseTheta, params, axisRad, t);
               const leads = projectTo12Leads(dipole, params, phaseTheta);
               const rawVoltage = leads[lead] || 0;
               const artifact = generateArtifacts(t, params, r * 4 + c);
@@ -262,7 +270,7 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
           const t = currentTime + relSec;
           const phaseTheta = ((t % rrIntervalSec) / rrIntervalSec) * 2 * Math.PI - Math.PI;
 
-          const dipole = computeCardiacDipole(phaseTheta, params, axisRad);
+          const dipole = computeCardiacDipole(phaseTheta, params, axisRad, t);
           const leads = projectTo12Leads(dipole, params, phaseTheta);
           const rawVoltage = leads['II'] || 0;
           const artifact = generateArtifacts(t, params, 1);
@@ -299,7 +307,6 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
         ctx.beginPath();
 
         for (let px = 0; px < width; px += 2) {
-          // Erase margin 20px ahead of the sweep bar
           const distAhead = (px - sweepCursorX + width) % width;
           if (distAhead > 0 && distAhead < 25) {
             continue;
@@ -308,7 +315,7 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
           const t = currentTime - ((sweepCursorX - px + width) % width) / (sweepSpeed * pxPerMm);
           const phaseTheta = ((t % rrIntervalSec) / rrIntervalSec) * 2 * Math.PI - Math.PI;
 
-          const dipole = computeCardiacDipole(phaseTheta, params, axisRad);
+          const dipole = computeCardiacDipole(phaseTheta, params, axisRad, t);
           const leads = projectTo12Leads(dipole, params, phaseTheta);
           const rawVoltage = leads['II'] || 0;
           const artifact = generateArtifacts(t, params, 1);
@@ -331,6 +338,62 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
         ctx.fillText(`SpO2: 98%`, width - 140, 62);
       }
 
+      // 4. Draw Digital Electronic Calipers Over Canvas Surface
+      if (caliperActive && caliperNeedles) {
+        const xA = (caliperNeedles.needleA / 100) * width;
+        const xB = (caliperNeedles.needleB / 100) * width;
+        const leftX = Math.min(xA, xB);
+        const rightX = Math.max(xA, xB);
+        const distPx = rightX - leftX;
+        const deltaSeconds = (distPx / (sweepSpeed * pxPerMm));
+        const deltaMs = Math.round(deltaSeconds * 1000);
+
+        // Vertical amber dashed needle guides
+        ctx.save();
+        ctx.strokeStyle = '#F59E0B';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(xA, 0);
+        ctx.lineTo(xA, height);
+        ctx.moveTo(xB, 0);
+        ctx.lineTo(xB, height);
+        ctx.stroke();
+        ctx.setLineDash([]); // clear dash
+
+        // Top & bottom caliper handles
+        [xA, xB].forEach((xPos) => {
+          ctx.fillStyle = '#F59E0B';
+          ctx.beginPath();
+          ctx.arc(xPos, 14, 5, 0, 2 * Math.PI);
+          ctx.arc(xPos, height - 14, 5, 0, 2 * Math.PI);
+          ctx.fill();
+        });
+
+        // Horizontal measuring bridge bar
+        const bridgeY = 26;
+        ctx.strokeStyle = '#F59E0B';
+        ctx.lineWidth = 2.0;
+        ctx.beginPath();
+        ctx.moveTo(leftX, bridgeY);
+        ctx.lineTo(rightX, bridgeY);
+        ctx.stroke();
+
+        // Caliper measurement badge
+        const midX = (leftX + rightX) / 2;
+        const tagText = `Δt: ${deltaMs} ms`;
+        ctx.font = 'bold 11px "JetBrains Mono", monospace';
+        const tagWidth = ctx.measureText(tagText).width;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+        ctx.strokeStyle = '#F59E0B';
+        ctx.lineWidth = 1.2;
+        ctx.fillRect(midX - tagWidth / 2 - 8, 16, tagWidth + 16, 20);
+        ctx.strokeRect(midX - tagWidth / 2 - 8, 16, tagWidth + 16, 20);
+        ctx.fillStyle = '#FCD34D';
+        ctx.fillText(tagText, midX - tagWidth / 2, 30);
+        ctx.restore();
+      }
+
       ctx.restore();
 
       animFrameRef.current = requestAnimationFrame(render);
@@ -343,7 +406,7 @@ export const ECGMonitor: React.FC<ECGMonitorProps> = ({
         cancelAnimationFrame(animFrameRef.current);
       }
     };
-  }, [params, isPlaying, theme, sweepSpeed, gain, viewLayout, highlightTerritories]);
+  }, [params, isPlaying, theme, sweepSpeed, gain, viewLayout, highlightTerritories, caliperActive, caliperNeedles]);
 
   return (
     <div className="relative w-full rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl flex flex-col">

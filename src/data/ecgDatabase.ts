@@ -645,6 +645,288 @@ export const ECG_DATABASE: ECGCase[] = [
       en: 'NEW LBBB = STEMI EQUIVALENT: A newly diagnosed or presumed-new LBBB in the setting of acute ischemic chest pain is considered a STEMI equivalent under ACC/AHA guidelines! To detect acute STEMI hidden behind an existing LBBB, use the Sgarbossa or Modified Sgarbossa Criteria (concordant ST elevation >= 1 mm is 98% specific for occlusion).',
       bn: 'নতুন LBBB মানেই হার্ট অ্যাটাক: কোনো রোগীর বুকে ব্যথার সাথে নতুন LBBB দেখা দিলে আন্তর্জাতিক নিয়মে একে STEMI সমতুল্য ধরে দ্রুত ক্যাথল্যাবে পাঠাতে হবে। পুরনো LBBB এর ভেতরে হার্ট অ্যাটাক লুকানো আছে কিনা তা বের করতে Sgarbossa ক্রাইটেরিয়া ব্যবহার করুন।'
     }
+  },
+  {
+    id: 'atrial-flutter-2-1',
+    category: 'arrhythmia',
+    difficulty: 'Intermediate',
+    urgency: 'Urgent Review',
+    title: {
+      en: 'Typical Atrial Flutter with 2:1 Conduction Block',
+      bn: 'টিপিক্যাল অ্যাট্রিয়াল ফ্ল্যাটার (২:১ কন্ডাকশন ব্লক - করাত-দাঁত প্যাটার্ন)'
+    },
+    territory: 'Global / Non-coronary',
+    culpritArtery: 'N/A',
+    simulatorParams: {
+      heartRate: 150,
+      rhythm: 'atrial_flutter',
+      prIntervalMs: 0,
+      qrsDurationMs: 84,
+      qtIntervalMs: 290,
+      qrsAxisDeg: 45,
+      leadModifiers: {
+        'II': { tWave: 'inverted' },
+        'III': { tWave: 'inverted' },
+        'aVF': { tWave: 'inverted' }
+      },
+      baselineWander: 0.05,
+      acInterference50Hz: 0.0,
+      muscleTremor: 0.0,
+      filterActive: true,
+      leadReversal: 'none'
+    },
+    diagnosticSteps: [
+      { step: 1, param: 'Calibration & Quality', en: 'Standard 25 mm/s, 10 mm/mV verified.', bn: 'স্ট্যান্ডার্ড ক্যালিব্রেশন সঠিক।', status: 'normal' },
+      { step: 2, param: 'Heart Rate', en: '150 BPM Ventricular Rate (Atrial rate = 300 BPM). Note: A regular narrow-complex tachycardia at exactly 150 BPM is Atrial Flutter 2:1 until proven otherwise!', bn: '১৫০ বিপিএম ভেন্ট্রিকুলার রেট (অ্যাট্রিয়াল রেট ৩০০ বিপিএম)। মনে রাখবেন: ঠিক ১৫০ বিপিএম রেটের রেগুলার ট্যাকিকার্ডিয়া পেলে সবার আগে ২:১ অ্যাট্রিয়াল ফ্ল্যাটার সন্দেহ করবেন!', status: 'critical' },
+      { step: 3, param: 'Rhythm', en: 'Regular 2:1 AV nodal block (every 2nd flutter wave conducts to the ventricles).', bn: 'নিয়মিত ২:১ AV ব্লক (প্রতি ২টি ফ্ল্যাটার তরঙ্গের ১টি ভেন্ট্রিকলে সঞ্চালিত হয়)।', status: 'abnormal' },
+      { step: 4, param: 'Cardiac Axis', en: 'Normal (+45°).', bn: 'স্বাভাবিক অ্যাক্সিস।', status: 'normal' },
+      { step: 5, param: 'P-Wave', en: 'CLASSIC SAWTOOTH "F" WAVES: Negative continuous sawtooth deflections in inferior leads (II, III, aVF) with no isoelectric baseline.', bn: 'করাত-দাঁতের মতো ফ্ল্যাটার (F) ওয়েভ: ইনফেরিয়র লিডগুলোতে (II, III, aVF) নিরবচ্ছিন্ন করাতের দাঁতের মতো খাঁজকাটা ঢেউ।', status: 'critical' },
+      { step: 6, param: 'PR Interval', en: 'Unmeasurable due to continuous flutter waves.', bn: 'পরিমাপযোগ্য নয়।', status: 'abnormal' },
+      { step: 7, param: 'QRS Complex', en: 'Narrow QRS (84 ms) indicating normal His-Purkinje ventricular activation.', bn: 'স্বাভাবিক ও সরু QRS (৮৪ ms)।', status: 'normal' },
+      { step: 8, param: 'ST-Segment', en: 'Distorted by ongoing flutter waves.', bn: 'ফ্ল্যাটার ওয়েভ দ্বারা পরিবর্তিত।', status: 'normal' },
+      { step: 9, param: 'T-Wave & QTc', en: 'Superimposed on flutter waves.', bn: 'ফ্ল্যাটার তরঙ্গের সাথে মিশ্রিত।', status: 'normal' }
+    ],
+    realWorldClinicalPearl: {
+      en: 'CALIPER TRICK: In 2:1 flutter, one flutter wave is clearly visible midway between R-waves, while the second flutter wave is BURIED inside the QRS-T complex! March your digital calipers at 200 ms (300 bpm) across the strip to reveal the hidden flutter waves. Vagal maneuvers or IV Adenosine will transiently slow AV conduction and unmask the underlying sawtooth waves!',
+      bn: 'ডিজিটাল ক্যালিপার কৌশল: ২:১ ফ্ল্যাটারে একটি ফ্ল্যাটার ঢেউ দুটি R-ওয়েভের ঠিক মাঝখানে দেখা যায় এবং দ্বিতীয় ঢেউটি QRS অথবা T-ওয়েভের নিচে লুকিয়ে থাকে! ক্যালিপার দিয়ে ২০০ ms ব্যবধানে মার্চ করলেই লুকানো ঢেউটি ধরা পড়বে। ক্যারোটিড ম্যাসাজ বা অ্যাডিনোসিন দিলে AV নোড সাময়িক ধীর হয়ে সম্পূর্ণ করাত-দাঁত প্যাটার্নটি স্পষ্ট হয়ে ওঠে।'
+    }
+  },
+  {
+    id: 'complete-rbbb',
+    category: 'blocks',
+    difficulty: 'Intermediate',
+    urgency: 'Routine',
+    title: {
+      en: 'Complete Right Bundle Branch Block (RBBB)',
+      bn: 'কমপ্লিট রাইট বান্ডল ব্রাঞ্চ ব্লক (RBBB - "খরগোশের কান" প্যাটার্ন)'
+    },
+    territory: 'Global / Non-coronary',
+    culpritArtery: 'LAD / Septal',
+    simulatorParams: {
+      heartRate: 74,
+      rhythm: 'rbbb_complete',
+      prIntervalMs: 165,
+      qrsDurationMs: 145,
+      qtIntervalMs: 420,
+      qrsAxisDeg: 85,
+      leadModifiers: {
+        'V1': { bizarreMorphology: true, tWave: 'inverted' },
+        'V2': { bizarreMorphology: true, tWave: 'inverted' },
+        'I': { qWaveMm: 0, tWave: 'normal' },
+        'V6': { qWaveMm: 0, tWave: 'normal' }
+      },
+      baselineWander: 0.05,
+      acInterference50Hz: 0.0,
+      muscleTremor: 0.0,
+      filterActive: true,
+      leadReversal: 'none'
+    },
+    diagnosticSteps: [
+      { step: 1, param: 'Calibration & Quality', en: 'Standard calibration confirmed.', bn: 'ক্যালিব্রেশন ঠিক আছে।', status: 'normal' },
+      { step: 2, param: 'Heart Rate', en: '74 BPM.', bn: '৭৪ বিপিএম।', status: 'normal' },
+      { step: 3, param: 'Rhythm', en: 'Normal Sinus Rhythm.', bn: 'নরমাল সাইনাস রিদম।', status: 'normal' },
+      { step: 4, param: 'Cardiac Axis', en: 'Normal to rightward axis (+85°).', bn: 'স্বাভাবিক থেকে ডানমুখী অ্যাক্সিস।', status: 'normal' },
+      { step: 5, param: 'P-Wave', en: 'Normal.', bn: 'স্বাভাবিক।', status: 'normal' },
+      { step: 6, param: 'PR Interval', en: '165 ms (Normal).', bn: '১৬৫ ms (স্বাভাবিক)।', status: 'normal' },
+      { step: 7, param: 'QRS Complex', en: 'PROLONGED QRS (145 ms >= 120 ms). Classic rsR\' ("rabbit ears" / "M-pattern") in right precordial leads V1-V2. Wide, slurred, blunt S-wave in lateral leads (I, aVL, V5, V6) ("Marrow" mnemonic).', bn: 'চওড়া QRS (১৪৫ ms > ১২০ ms)। ডান পাশের লিড V1-V2-তে ক্লাসিক "খরগোশের কানের মতো" rsR\' প্যাটার্ন এবং ল্যাটারাল লিডে (I, aVL, V6) চওড়া ভোঁতা S-wave ("MaRRoW" নেমোনিক)।', status: 'critical' },
+      { step: 8, param: 'ST-Segment', en: 'ST depression with T-wave inversion in V1-V2 (secondary repolarization changes).', bn: 'V1-V2 লিডে সেকেন্ডারি ST ডিপ্রেশন ও T ওয়েভ ইনভার্সন।', status: 'abnormal' },
+      { step: 9, param: 'T-Wave & QTc', en: 'Discordant inverted T-waves in V1-V2.', bn: 'V1-V2 তে সেকেন্ডারি নেগেটিভ T-wave।', status: 'abnormal' }
+    ],
+    realWorldClinicalPearl: {
+      en: 'RBBB VS LBBB ST-ELEVATION: Unlike LBBB (which obscures ST segments and mimics STEMI), RBBB does NOT obscure acute STEMI! If you see ST-elevation in an ECG with RBBB, it is a TRUE STEMI and you can activate the cath lab with full confidence. New RBBB with chest pain and tachycardia strongly suggests acute massive pulmonary embolism or proximal LAD occlusion.',
+      bn: 'ক্লিনিক্যাল রুল: LBBB থাকলে হার্ট অ্যাটাকের দাগ ঢাকা পড়ে গেলেও RBBB-তে হার্ট অ্যাটাক কখনোই ঢাকা পড়ে না! RBBB থাকা অবস্থায় ST-elevation দেখলে ১০০% নিশ্চিত থাকুন এটি জেনুইন হার্ট অ্যাটাক (STEMI)। হঠাৎ বুকে ব্যথা ও শ্বাসকষ্টের সাথে নতুন RBBB দেখা দিলে পালমোনারি এমবোলিজম সন্দেহ করুন।'
+    }
+  },
+  {
+    id: 'left-main-coronary-occlusion',
+    category: 'ischemia_infarction',
+    difficulty: 'Fellowship',
+    urgency: 'Cath Lab Activation (Code STEMI)',
+    title: {
+      en: 'Acute Left Main Coronary Artery (LMCA) Occlusion / Severe Triple-Vessel Disease',
+      bn: 'একিউট লেফট মেইন করোনাই আর্টারি (LMCA) অক্লুশন (Lead aVR-এ মারাত্মক ST-এলিমেশন)'
+    },
+    territory: 'Global / Non-coronary',
+    culpritArtery: 'LMCA',
+    simulatorParams: {
+      heartRate: 110,
+      rhythm: 'sinus_tachycardia',
+      prIntervalMs: 160,
+      qrsDurationMs: 96,
+      qtIntervalMs: 380,
+      qrsAxisDeg: -15,
+      leadModifiers: {
+        'aVR': { stElevationMm: 3.5, tWave: 'hyperacute' },
+        'V1': { stElevationMm: 1.5 },
+        'I': { stElevationMm: -2.5, tWave: 'inverted' },
+        'II': { stElevationMm: -3.0, tWave: 'inverted' },
+        'V3': { stElevationMm: -3.5, tWave: 'inverted' },
+        'V4': { stElevationMm: -4.5, tWave: 'inverted' },
+        'V5': { stElevationMm: -4.0, tWave: 'inverted' },
+        'V6': { stElevationMm: -3.0, tWave: 'inverted' }
+      },
+      baselineWander: 0.05,
+      acInterference50Hz: 0.0,
+      muscleTremor: 0.05,
+      filterActive: true,
+      leadReversal: 'none'
+    },
+    diagnosticSteps: [
+      { step: 1, param: 'Calibration & Quality', en: 'Standard 25 mm/s, 10 mm/mV verified.', bn: 'স্ট্যান্ডার্ড ক্যালিব্রেশন সঠিক।', status: 'normal' },
+      { step: 2, param: 'Heart Rate', en: '110 BPM (Sinus Tachycardia secondary to cardiogenic stress).', bn: '১১০ বিপিএম (তীব্র চাপের কারণে সাইনাস ট্যাকিকার্ডিয়া)।', status: 'abnormal' },
+      { step: 3, param: 'Rhythm', en: 'Sinus Tachycardia.', bn: 'সাইনাস ট্যাকিকার্ডিয়া।', status: 'abnormal' },
+      { step: 4, param: 'Cardiac Axis', en: 'Leftward (-15°).', bn: 'লেফটওয়ার্ড অ্যাক্সিস।', status: 'normal' },
+      { step: 5, param: 'P-Wave', en: 'Normal.', bn: 'স্বাভাবিক।', status: 'normal' },
+      { step: 6, param: 'PR Interval', en: '160 ms.', bn: '১৬০ ms (স্বাভাবিক)।', status: 'normal' },
+      { step: 7, param: 'QRS Complex', en: 'Narrow with marked baseline depression shifts.', bn: 'সরু QRS কমপ্লেক্স।', status: 'normal' },
+      { step: 8, param: 'ST-Segment', en: 'CRITICAL LMCA PATTERN: Marked ST-segment elevation in lead aVR >= 1.5 mm (often > V1) WITH widespread, profound horizontal/downsloping ST-depression across >= 6-8 leads (I, II, V3-V6).', bn: 'মারাত্মক LMCA প্যাটার্ন: Lead aVR-এ ১.৫ মিমি-র বেশি বিপজ্জনক ST-elevation এবং সাথে প্রায় ৬ থেকে ৮টি লিডে (I, II, V3-V6) গভীর ST-ডিপ্রেশন।', status: 'critical' },
+      { step: 9, param: 'T-Wave & QTc', en: 'Hyperacute T in aVR; inverted T waves in precordials.', bn: 'aVR-এ খাড়া T ওয়েভ এবং অন্যান্য লিডে উল্টো T ওয়েভ।', status: 'critical' }
+    ],
+    realWorldClinicalPearl: {
+      en: 'HIGHEST MORTALITY ECG IN MEDICINE: Lead aVR is typically ignored as the "garbage lead", but in acute coronary syndromes, ST elevation in aVR >= 1 mm with elevation in aVR > V1 predicts Acute Left Main Coronary Occlusion or severe 3-vessel disease with 70%+ hemodynamic collapse risk! Call the cath lab interventionalist IMMEDIATELY. Mortality without emergent PCI/CABG approaches 50%.',
+      bn: 'চিকিৎসাবিজ্ঞানের সবচেয়ে প্রাণঘাতী ইসিজি: সাধারণত সবাই Lead aVR অবহেলা করে, কিন্তু তীব্র বুকে ব্যথায় aVR-এ ১ মিলিমিটারের বেশি ST-elevation এবং সাথে একাধিক লিডে ST-depression থাকা মানে হার্টের মূল রক্তনালী Left Main (LMCA) সম্পূর্ণ বন্ধ হয়ে গেছে! জরুরি এনজিওগ্রাম বা বাইপাস সার্জারি (CABG) ছাড়া মৃত্যুর ঝুঁকি ৫০% এর বেশি। সাথে সাথে ক্যাথ ল্যাব অ্যালার্ট দিন।'
+    }
+  },
+  {
+    id: 'left-ventricular-hypertrophy',
+    category: 'hypertrophy',
+    difficulty: 'Intermediate',
+    urgency: 'Routine',
+    title: {
+      en: 'Left Ventricular Hypertrophy (LVH) with Lateral Repolarization Strain',
+      bn: 'লেফট ভেন্ট্রিকুলার হাইপারট্রফি (LVH উইথ ল্যাটারাল স্ট্রেন প্যাটার্ন)'
+    },
+    territory: 'Lateral (I, aVL, V5-V6)',
+    culpritArtery: 'N/A',
+    simulatorParams: {
+      heartRate: 68,
+      rhythm: 'normal_sinus',
+      prIntervalMs: 175,
+      qrsDurationMs: 104,
+      qtIntervalMs: 430,
+      qrsAxisDeg: -10,
+      leadModifiers: {
+        'V1': { qWaveMm: -2.4, qrsVoltageMult: 1.5, stElevationMm: 1.0 },
+        'V2': { qWaveMm: -2.8, qrsVoltageMult: 1.6, stElevationMm: 1.0 },
+        'V5': { qrsVoltageMult: 1.8, stElevationMm: -2.2, tWave: 'inverted' },
+        'V6': { qrsVoltageMult: 1.7, stElevationMm: -2.0, tWave: 'inverted' },
+        'I': { stElevationMm: -1.5, tWave: 'inverted', qrsVoltageMult: 1.3 },
+        'aVL': { stElevationMm: -1.8, tWave: 'inverted', qrsVoltageMult: 1.4 }
+      },
+      baselineWander: 0.05,
+      acInterference50Hz: 0.0,
+      muscleTremor: 0.0,
+      filterActive: true,
+      leadReversal: 'none'
+    },
+    diagnosticSteps: [
+      { step: 1, param: 'Calibration & Quality', en: 'Standard calibration confirmed. Ensure voltage calibration is 10 mm/mV (not half standard).', bn: 'ক্যালিব্রেশন ১০ মিমি/এমভি নিশ্চিত করুন।', status: 'normal' },
+      { step: 2, param: 'Heart Rate', en: '68 BPM.', bn: '৬৮ বিপিএম।', status: 'normal' },
+      { step: 3, param: 'Rhythm', en: 'Sinus rhythm.', bn: 'সাইনাস রিদম।', status: 'normal' },
+      { step: 4, param: 'Cardiac Axis', en: 'Mild left axis deviation (-10°).', bn: 'সামান্য বামমুখী অ্যাক্সিস।', status: 'normal' },
+      { step: 5, param: 'P-Wave', en: 'Prominent terminal negative component in V1 (Left Atrial Abnormality from chronic hypertension).', bn: 'V1 এ বাম অ্যাট্রিয়াম বড় হওয়ার লক্ষণ।', status: 'abnormal' },
+      { step: 6, param: 'PR Interval', en: '175 ms.', bn: '১৭৫ ms।', status: 'normal' },
+      { step: 7, param: 'QRS Complex', en: 'MASSIVE VOLTAGE: Sokolow-Lyon Criteria fulfilled: S-wave in V1 (24 mm) + R-wave in V5 (28 mm) = 52 mm (> 35 mm!). Cornell criteria also positive (R in aVL > 11 mm).', bn: 'বিশাল ভোল্টেজ: Sokolow-Lyon ক্রাইটেরিয়া পজিটিভ: V1 এর S-wave (২৪ মিমি) + V5 এর R-wave (২৮ মিমি) = ৫২ মিমি (যা ৩৫ মিমি এর অনেক বেশি!)।', status: 'critical' },
+      { step: 8, param: 'ST-Segment', en: 'LV STRAIN PATTERN: Asymmetrical downsloping ST-segment depression in lateral leads (I, aVL, V5, V6). Concave upward ST elevation in V1-V2.', bn: 'LV স্ট্রেন প্যাটার্ন: ল্যাটারাল লিডে (I, aVL, V5, V6) অপ্রতিসম নিচের দিকে নামা ST-ডিপ্রেশন এবং V1-V2 তে সামান্য অবতল ST-elevation।', status: 'critical' },
+      { step: 9, param: 'T-Wave & QTc', en: 'Asymmetric deep T-wave inversion with rapid return to baseline in lateral leads.', bn: 'ল্যাটারাল লিডগুলোতে অপ্রতিসম উল্টো T ওয়েভ।', status: 'critical' }
+    ],
+    realWorldClinicalPearl: {
+      en: 'DO NOT CONFUSE WITH STEMI: In LVH, precordial leads V1-V2 frequently display 1-3 mm of ST-elevation with deep S-waves. Interns frequently misdiagnose this as an Anterior STEMI! Look at the lateral leads (V5, V6, aVL): in LVH you will see the classic asymmetrical "strain" depression. In true STEMI, ST elevation is convex ("tombstone") and accompanied by reciprocal changes.',
+      bn: 'হার্ট অ্যাটাকের সাথে ভুল করবেন না: LVH থাকলে গভীর S-তরঙ্গের কারণে ডান পাশের V1-V2 লিডে স্বাভাবিকভাবেই ১-৩ মিমি ST-elevation থাকতে পারে। অনভিজ্ঞ ডাক্তাররা এটিকে প্রায়ই অ্যান্টেরিয়র STEMI ভেবে ভুল করেন! নিশ্চিত হতে V5 ও V6 খেয়াল করুন—LVH-এ সেখানে অপ্রতিসম ঢালু স্ট্রেন প্যাটার্ন থাকে। প্রকৃত হার্ট অ্যাটাকে ST উত্তল (কবরফলকের মতো) হয়।'
+    }
+  },
+  {
+    id: 'severe-hypokalemia',
+    category: 'electrolytes_drugs_pacer',
+    difficulty: 'Intermediate',
+    urgency: 'Urgent Review',
+    title: {
+      en: 'Severe Hypokalemia (Serum K+ < 2.5 mEq/L) - Prominent U-Waves',
+      bn: 'সিভিয়ার হাইপোক্যালেমিয়া (পটাশিয়াম K+ < ২.৫ mEq/L) - প্রমিনেন্ট U-ওয়েভ'
+    },
+    territory: 'Global / Non-coronary',
+    culpritArtery: 'N/A',
+    simulatorParams: {
+      heartRate: 78,
+      rhythm: 'hypokalemia_u_wave',
+      prIntervalMs: 195,
+      qrsDurationMs: 92,
+      qtIntervalMs: 510,
+      qrsAxisDeg: 40,
+      leadModifiers: {
+        'V2': { tWave: 'flattened', stElevationMm: -1.0 },
+        'V3': { tWave: 'flattened', stElevationMm: -1.2 },
+        'V4': { tWave: 'flattened', stElevationMm: -1.0 },
+        'II': { tWave: 'flattened', stElevationMm: -0.8 }
+      },
+      baselineWander: 0.05,
+      acInterference50Hz: 0.0,
+      muscleTremor: 0.0,
+      filterActive: true,
+      leadReversal: 'none'
+    },
+    diagnosticSteps: [
+      { step: 1, param: 'Calibration & Quality', en: 'Standard calibration confirmed.', bn: 'ক্যালিব্রেশন ঠিক আছে।', status: 'normal' },
+      { step: 2, param: 'Heart Rate', en: '78 BPM.', bn: '৭৮ বিপিএম।', status: 'normal' },
+      { step: 3, param: 'Rhythm', en: 'Sinus rhythm.', bn: 'সাইনাস রিদম।', status: 'normal' },
+      { step: 4, param: 'Cardiac Axis', en: 'Normal (+40°).', bn: 'স্বাভাবিক অ্যাক্সিস।', status: 'normal' },
+      { step: 5, param: 'P-Wave', en: 'Prominent P-waves (P-wave amplitude often increases in hypokalemia).', bn: 'P-ওয়েভের উচ্চতা কিছুটা বেশি।', status: 'normal' },
+      { step: 6, param: 'PR Interval', en: '195 ms (upper limit of normal).', bn: '১৯৫ ms।', status: 'normal' },
+      { step: 7, param: 'QRS Complex', en: 'Mild widening and terminal slurring.', bn: 'স্বাভাবিক QRS।', status: 'normal' },
+      { step: 8, param: 'ST-Segment', en: 'Mild sagging ST-segment depression in precordial leads (V2-V5).', bn: 'প্রিকর্ডিয়াল লিডে হালকা ঝুলে পড়া ST-ডিপ্রেশন।', status: 'abnormal' },
+      { step: 9, param: 'T-Wave & QTc', en: 'PROMINENT U-WAVES & FLATTENED T-WAVES: Progressive flattening of T-waves and development of prominent positive U-waves (often U > T amplitude) in V2-V4. Apparent QU prolongation (510 ms).', bn: 'প্রমিনেন্ট U-ওয়েভ এবং চ্যাপ্টা T-ওয়েভ: T-ওয়েভ প্রায় সোজা হয়ে গেছে এবং তার পেছনে বড় U-ওয়েভ তৈরি হয়েছে। আপাতদৃষ্টিতে লং-QT (QU ব্যবধান) মনে হয়।', status: 'critical' }
+    ],
+    realWorldClinicalPearl: {
+      en: 'TORSADES DE POINTES TRIGGER: Hypokalemia causes apparent QT prolongation because the prominent U-wave fuses with the end of the flattened T-wave (creating a long QU interval). This delayed repolarization leaves the heart vulnerable to early afterdepolarizations (EADs) triggering fatal Torsades de Pointes! Replace potassium with IV KCl infusion in saline (NEVER push IV potassium bolus—it is lethal). Co-administer IV Magnesium.',
+      bn: 'প্রাণঘাতী সতর্কবার্তা: হাইপোক্যালেমিয়ায় T-ওয়েভ চ্যাপ্টা হয়ে U-ওয়েভের সাথে মিশে যাওয়ায় মনে হয় QT অনেক বড় হয়ে গেছে। এই দীর্ঘ রিপোলারাইজেশন যেকোনো সময় Torsades de Pointes নামক প্রাণঘাতী অ্যারিথমিয়া ডেকে আনে! রোগীকে দ্রুত শিরাপথে পটাশিয়াম (IV KCl infusion) এবং ম্যাগনেসিয়াম দিতে হবে। মনে রাখবেন: ভুলেও পটাশিয়াম পুশ ইনজেকশন দেবেন না, দিলে রোগী সাথে সাথে মারা যাবে।'
+    }
+  },
+  {
+    id: 'digoxin-effect',
+    category: 'electrolytes_drugs_pacer',
+    difficulty: 'Intermediate',
+    urgency: 'Urgent Review',
+    title: {
+      en: 'Digoxin Effect ("Salvador Dalí Mustache" Scooped ST Depression)',
+      bn: 'ডিগক্সিন ইফেক্ট ("সালভাদর দালি গোঁফ" আকৃতির অবতল ST ডিপ্রেশন)'
+    },
+    territory: 'Global / Non-coronary',
+    culpritArtery: 'N/A',
+    simulatorParams: {
+      heartRate: 58,
+      rhythm: 'normal_sinus',
+      prIntervalMs: 210,
+      qrsDurationMs: 82,
+      qtIntervalMs: 320,
+      qrsAxisDeg: 35,
+      leadModifiers: {
+        'V4': { stElevationMm: -2.0, tWave: 'biphasic' },
+        'V5': { stElevationMm: -2.2, tWave: 'biphasic' },
+        'V6': { stElevationMm: -1.8, tWave: 'biphasic' },
+        'II': { stElevationMm: -1.8, tWave: 'biphasic' },
+        'aVF': { stElevationMm: -1.5, tWave: 'biphasic' }
+      },
+      baselineWander: 0.05,
+      acInterference50Hz: 0.0,
+      muscleTremor: 0.0,
+      filterActive: true,
+      leadReversal: 'none'
+    },
+    diagnosticSteps: [
+      { step: 1, param: 'Calibration & Quality', en: 'Standard calibration confirmed.', bn: 'ক্যালিব্রেশন ঠিক আছে।', status: 'normal' },
+      { step: 2, param: 'Heart Rate', en: '58 BPM (Mild sinus bradycardia due to increased vagal tone from digitalis).', bn: '৫৮ বিপিএম (ডিগক্সিনের ভেগাল প্রভাবের কারণে মৃদু ব্রাডিকার্ডিয়া)।', status: 'abnormal' },
+      { step: 3, param: 'Rhythm', en: 'Sinus rhythm.', bn: 'সাইনাস রিদম।', status: 'normal' },
+      { step: 4, param: 'Cardiac Axis', en: 'Normal (+35°).', bn: 'স্বাভাবিক অ্যাক্সিস।', status: 'normal' },
+      { step: 5, param: 'P-Wave', en: 'Normal.', bn: 'স্বাভাবিক।', status: 'normal' },
+      { step: 6, param: 'PR Interval', en: '210 ms (Mild 1st degree AV block characteristic of digoxin nodal slowing).', bn: '২১০ ms (ডিগক্সিনের নোডাল স্লোয়িংয়ের কারণে হালকা 1st-degree AV block)।', status: 'abnormal' },
+      { step: 7, param: 'QRS Complex', en: 'Narrow normal complex.', bn: 'স্বাভাবিক QRS।', status: 'normal' },
+      { step: 8, param: 'ST-Segment', en: 'CLASSIC SCOOPED "SALVADOR DALÍ" ST DEPRESSION: Sagging, concave downsloping ST-segment resembling a mustache or hockey-stick in leads with tall R-waves (V4-V6, II, aVF).', bn: 'সালভাদর দালির গোঁফের মতো ঝোলানো অবতল ST-ডিপ্রেশন: হকি স্টিক বা বাঁকানো চামচের মতো নিচের দিকে নেমে যাওয়া ST সেগমেন্ট (V4-V6, II, aVF)।', status: 'critical' },
+      { step: 9, param: 'T-Wave & QTc', en: 'Shortened QTc interval (320 ms) with biphasic or flattened T-waves.', bn: 'খাটো QTc ইন্টারভ্যাল (৩২০ ms) এবং বাইফ্যাসিক T-ওয়েভ।', status: 'abnormal' }
+    ],
+    realWorldClinicalPearl: {
+      en: 'DIGOXIN EFFECT VS DIGOXIN TOXICITY: Scooped ST depression indicates therapeutic digoxin presence (Digoxin EFFECT) and does NOT correlate with serum drug levels or toxicity! Digoxin TOXICITY is diagnosed when arrhythmias appear: PVCs/bigeminy (most common), Bidirectional VT (virtually pathognomonic), or Atrial Tachycardia with variable AV block. Treat severe toxicity with Digoxin Immune Fab (DigiFab).',
+      bn: 'ডিগক্সিন ইফেক্ট বনাম ডিগক্সিন টক্সিসিটি: চামচের মতো ST ডিপ্রেশন থাকা মানে রোগী ডিগক্সিন ওষুধ খাচ্ছে (এটি সাধারণ ড্রাগ ইফেক্ট, বিষক্রিয়া নয়)। কিন্তু রোগীর যদি এক সাথে ব্রাডিকার্ডিয়া ও একটোপিক বিট (PVC bigeminy) অথবা Bidirectional VT তৈরি হয়, তখন বুঝতে হবে ডিগক্সিন টক্সিসিটি হয়েছে। মারাত্মক বিষক্রিয়ায় ডিগক্সিন অ্যান্টিবডি (DigiFab) দিতে হবে।'
+    }
   }
 ];
 

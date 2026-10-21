@@ -118,9 +118,12 @@ export const HeartVisualizer: React.FC<HeartVisualizerProps> = ({
             <text x="10" y="128" fill="#94a3b8" fontSize="7">III (+120°)</text>
 
             {/* aVL: -30 deg */}
-            <text x="122" y="40" fill="#64748b" fontSize="7">aVL (-30°)</text>
+            <line x1="28" y1="110" x2="132" y2="50" stroke="#334155" strokeWidth="1" strokeDasharray="2,2" />
+            <text x="122" y="44" fill="#94a3b8" fontSize="7">aVL (-30°)</text>
+
             {/* aVR: -150 deg */}
-            <text x="12" y="40" fill="#64748b" fontSize="7">aVR (-150°)</text>
+            <line x1="28" y1="50" x2="132" y2="110" stroke="#334155" strokeWidth="1" strokeDasharray="2,2" />
+            <text x="12" y="44" fill="#94a3b8" fontSize="7">aVR (-150°)</text>
 
             {/* Active Vector Arrow (rotated by qrsAxisDeg) */}
             {(() => {
