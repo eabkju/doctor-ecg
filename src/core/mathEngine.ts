@@ -49,11 +49,12 @@ export function calculateQTc(qtMs: number, hr: number): { bazett: number; frider
 
 /**
  * Evaluates Gaussian wave component: a * exp( -((theta - mu)^2) / (2 * b^2) )
+ * Phase difference is wrapped to [-π, +π] to prevent asymmetric evaluation.
  */
 function gaussian(theta: number, a: number, b: number, mu: number): number {
   let diff = theta - mu;
   while (diff < -Math.PI) diff += 2 * Math.PI;
-  while (diff > Math.PI) diff += 2 * Math.PI;
+  while (diff > Math.PI) diff -= 2 * Math.PI; // FIX: was incorrectly += causing positive-phase distortion
   return a * Math.exp(-(diff * diff) / (2 * b * b));
 }
 
@@ -145,6 +146,13 @@ export function computeCardiacDipole(
   const tWidth = 0.35;
   const tTheta = 1.6;
 
+  // U-wave: follows T-wave, prominent in hypokalemia (medical-grade biophysical component)
+  // Normal U-wave amplitude: 0.5–1 mm (0.05–0.1 mV). In hypokalemia: U > T amplitude.
+  const isHypokalemia = rhythm.includes('hypokalemia');
+  const uAmp   = isHypokalemia ? 0.22 : 0.055;  // hypokalemia: >2mm (0.22 mV), normal: ~0.5mm
+  const uWidth  = isHypokalemia ? 0.30 : 0.18;
+  const uTheta  = 2.5; // follows T-wave centroid at ~1.6 rad
+
   // Q, R, S waves
   const Q_wave = gaussian(theta, qAmp, qWidth, qTheta);
   const R_wave = gaussian(theta, rAmp, rWidth, rTheta);
@@ -154,10 +162,14 @@ export function computeCardiacDipole(
   // T wave
   const T_wave = gaussian(theta, tAmp, tWidth, tTheta);
 
+  // U-wave (normal & hypokalemia)
+  const U_wave = gaussian(theta, uAmp, uWidth, uTheta);
+
   // Combine along 3 axes modulated by mean frontal QRS electrical axis
-  const Px = (P_wave * 0.3) + (QRS_wave * Math.cos(axisRad) * 0.85) + (T_wave * 0.4);
-  const Py = (P_wave * 0.9) + (QRS_wave * Math.sin(axisRad) * 1.10) + (T_wave * 0.75);
-  const Pz = -(P_wave * 0.2) - (QRS_wave * 0.55) - (T_wave * 0.3);
+  // U-wave projects primarily in cranio-caudal (Py) axis and weakly in Px
+  const Px = (P_wave * 0.3) + (QRS_wave * Math.cos(axisRad) * 0.85) + (T_wave * 0.4) + (U_wave * 0.15);
+  const Py = (P_wave * 0.9) + (QRS_wave * Math.sin(axisRad) * 1.10) + (T_wave * 0.75) + (U_wave * 0.85);
+  const Pz = -(P_wave * 0.2) - (QRS_wave * 0.55) - (T_wave * 0.3) - (U_wave * 0.1);
 
   return [Px, Py, Pz];
 }
